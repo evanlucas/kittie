@@ -147,6 +147,18 @@ Log.prototype._writeComponent = function _writeComponent(str) {
     this._writePrefix(this.component)
 }
 
+Log.prototype.inspect = function inspect(obj, depth) {
+  if (!this._shouldLog('verbose')) return false
+  const str = util.inspect(obj, {
+    colors: this._useColor
+  , depth: typeof depth === 'number' ? depth : null
+  })
+  str.split(/\r?\n/).forEach((line) => {
+    this._writeComponent(applyFG('INSP', brightBlue, this._useColor))
+    this._log(line)
+  })
+}
+
 Log.prototype.silly = function silly() {
   if (!this._shouldLog('silly')) return false
 
