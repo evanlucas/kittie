@@ -1,13 +1,13 @@
-# driftwood
+# kittie
 
-[![Build Status](https://travis-ci.org/evanlucas/driftwood.svg)](https://travis-ci.org/evanlucas/driftwood)
+[![Build Status](https://travis-ci.org/evanlucas/kittie.svg)](https://travis-ci.org/evanlucas/kittie)
 
 A fast, simple logger with children
 
 ## Install
 
 ```bash
-$ npm install [--save] driftwood
+$ npm install [--save] kittie
 ```
 
 ## API
@@ -17,7 +17,7 @@ $ npm install [--save] driftwood
 A logger is exported. To use:
 
 ```js
-const log = require('driftwood')
+const log = require('kittie')
 log.silly('hello')
 log.verbose('hello')
 log.info('hello')

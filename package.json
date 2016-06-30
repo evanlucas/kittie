@@ -1,5 +1,5 @@
 {
-  "name": "driftwood",
+  "name": "kittie",
   "version": "1.0.0",
   "description": "A fast, simple logger with children",
   "main": "index.js",
@@ -21,10 +21,10 @@
   "author": "Evan Lucas <evanlucas@me.com>",
   "repository": {
     "type": "git",
-    "url": "https://github.com/evanlucas/driftwood"
+    "url": "https://github.com/evanlucas/kittie"
   },
-  "homepage": "https://github.com/evanlucas/driftwood",
+  "homepage": "https://github.com/evanlucas/kittie",
   "bugs": {
-    "url": "https://github.com/evanlucas/driftwood/issues"
+    "url": "https://github.com/evanlucas/kittie/issues"
   }
 }
