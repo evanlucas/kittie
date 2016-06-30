@@ -116,6 +116,8 @@ Log.prototype.child = function child(comp) {
     heading: this.heading
   , level: this.level
   , stream: this.stream
+  , maxComponentLength: this.maxComponentLength
+  , useColor: this._useColor
   }, {
     component: comp
   }))

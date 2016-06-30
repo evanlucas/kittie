@@ -8,6 +8,6 @@ info 34 'works, but has no heading'
 [92minfo[0m [31m      test |[0m log2 level silly
 [92minfo[0m [31m      test |[0m log2 level info
 [92minfo[0m [32m  biscuits |[0m SHOULD SEE ME
-info another lo | HELLOOOOO!!! I have some cut off
-info          another log | HELLO!!!
-info          another log | now you can see more
+[92minfo[0m [33manother lo |[0m HELLOOOOO!!! I have some cut off
+[92minfo[0m [33m         another log |[0m HELLO!!!
+[92minfo[0m [33m         another log |[0m now you can see more
