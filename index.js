@@ -7,6 +7,8 @@ const has = (obj, prop) => {
   return Object.prototype.hasOwnProperty.call(obj, prop)
 }
 
+const splitRE = /\r?\n/
+
 var currentColor
 
 const logLevels = new Map([
@@ -153,7 +155,7 @@ Log.prototype.inspect = function inspect(obj, depth) {
     colors: this._useColor
   , depth: typeof depth === 'number' ? depth : null
   })
-  str.split(/\r?\n/).forEach((line) => {
+  str.split(splitRE).forEach((line) => {
     this._writeComponent(applyFG('INSP', brightBlue, this._useColor))
     this._log(line)
   })
@@ -181,7 +183,7 @@ Log.prototype.silly = function silly() {
       str = util.format.apply(util, args)
       break
   }
-  str.split(/\r?\n/).forEach((line) => {
+  str.split(splitRE).forEach((line) => {
     this._writeComponent(applyInverse('sill', this._useColor))
     this._log(line)
   })
@@ -209,7 +211,7 @@ Log.prototype.verbose = function verbose() {
       str = util.format.apply(util, args)
       break
   }
-  str.split(/\r?\n/).forEach((line) => {
+  str.split(splitRE).forEach((line) => {
     this._writeComponent(applyFG('verb', brightBlue, this._useColor))
     this._log(line)
   })
@@ -237,7 +239,7 @@ Log.prototype.info = function info() {
       str = util.format.apply(util, args)
       break
   }
-  str.split(/\r?\n/).forEach((line) => {
+  str.split(splitRE).forEach((line) => {
     this._writeComponent(applyFG('info', brightGreen, this._useColor))
     this._log(line)
   })
@@ -265,7 +267,7 @@ Log.prototype.http = function http() {
       str = util.format.apply(util, args)
       break
   }
-  str.split(/\r?\n/).forEach((line) => {
+  str.split(splitRE).forEach((line) => {
     this._writeComponent(applyFG('http', green, this._useColor))
     this._log(line)
   })
@@ -293,7 +295,7 @@ Log.prototype.warn = function warn() {
       str = util.format.apply(util, args)
       break
   }
-  str.split(/\r?\n/).forEach((line) => {
+  str.split(splitRE).forEach((line) => {
     this._writeComponent(applyFGBG('WARN', black, yellow, this._useColor))
     this._log(line)
   })
@@ -321,7 +323,7 @@ Log.prototype.error = function error() {
       str = util.format.apply(util, args)
       break
   }
-  str.split(/\r?\n/).forEach((line) => {
+  str.split(splitRE).forEach((line) => {
     this._writeComponent(applyFG('ERR!', brightRed, this._useColor))
     this._log(line)
   })
