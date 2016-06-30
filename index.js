@@ -150,7 +150,7 @@ Log.prototype._writeComponent = function _writeComponent(str) {
 }
 
 Log.prototype.inspect = function inspect(obj, depth) {
-  if (!this._shouldLog('verbose')) return false
+  if (!this._shouldLog('verbose')) return
   const str = util.inspect(obj, {
     colors: this._useColor
   , depth: typeof depth === 'number' ? depth : null
@@ -162,7 +162,7 @@ Log.prototype.inspect = function inspect(obj, depth) {
 }
 
 Log.prototype.silly = function silly() {
-  if (!this._shouldLog('silly')) return false
+  if (!this._shouldLog('silly')) return
 
   let str
   switch (arguments.length) {
@@ -190,7 +190,7 @@ Log.prototype.silly = function silly() {
 }
 
 Log.prototype.verbose = function verbose() {
-  if (!this._shouldLog('verbose')) return false
+  if (!this._shouldLog('verbose')) return
 
   let str
   switch (arguments.length) {
@@ -218,7 +218,7 @@ Log.prototype.verbose = function verbose() {
 }
 
 Log.prototype.info = function info() {
-  if (!this._shouldLog('info')) return false
+  if (!this._shouldLog('info')) return
 
   let str
   switch (arguments.length) {
@@ -246,7 +246,7 @@ Log.prototype.info = function info() {
 }
 
 Log.prototype.http = function http() {
-  if (!this._shouldLog('http')) return false
+  if (!this._shouldLog('http')) return
 
   let str
   switch (arguments.length) {
@@ -274,7 +274,7 @@ Log.prototype.http = function http() {
 }
 
 Log.prototype.warn = function warn() {
-  if (!this._shouldLog('warn')) return false
+  if (!this._shouldLog('warn')) return
 
   let str
   switch (arguments.length) {
@@ -302,7 +302,7 @@ Log.prototype.warn = function warn() {
 }
 
 Log.prototype.error = function error() {
-  if (!this._shouldLog('error')) return false
+  if (!this._shouldLog('error')) return
 
   let str
   switch (arguments.length) {
