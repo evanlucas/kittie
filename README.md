@@ -37,7 +37,58 @@ debug.level = process.env.DEBUG
 debug.info('Hey! This is a debug message')
 ```
 
-Try it out by pasting the above into a file and running it with node.
+Each logger has the following methods:
+
+#### silly(arg1[, arg2])
+
+Will only be logged if the logger's `level` is set to `silly`.
+
+#### verbose(arg1[, arg2])
+
+Will only be logged if the logger's `level` is set to `silly` or `verbose`.
+
+#### info(arg1[, arg2])
+
+Will only be logged if the logger's `level` is set to `silly`, `verbose`, or
+`info`.
+
+#### http(arg1[, arg2])
+
+Will only be logged if the logger's `level` is set to `silly`, `verbose`,
+`info`, or `http`.
+
+#### warn(arg1[, arg2])
+
+Will be logged unless the logger's `level` is set to `silent` or `error`.
+
+#### error(arg1[, arg2])
+
+Will be logged unless the logger's `level` is set to `silent`.
+
+#### inspect(obj[, depth])
+
+`log.inspect()` is a bit different than the other log methods. It functions
+at the `verbose` log level, but calls `util.inspect()` under the hood.
+
+#### child(component)
+
+Creates a new child logger that inherits settings from it's parent.
+A child logger can be used to distinguish different modules inside
+a single project.
+
+## Examples
+
+Check out the [`examples/`](examples/) directory to see some examples
+
+## Log levels
+
+* `silly`
+* `verbose`
+* `info`
+* `http`
+* `warn`
+* `error`
+* `silent`
 
 ## Test
 
