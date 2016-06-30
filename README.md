@@ -84,7 +84,7 @@ Check out the [`examples/`](examples/) directory to see some examples
 
 * `silly`
 * `verbose`
-* `info`
+* `info` **(Default)**
 * `http`
 * `warn`
 * `error`
