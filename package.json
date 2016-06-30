@@ -1,6 +1,6 @@
 {
   "name": "kittie",
-  "version": "2.0.1",
+  "version": "2.1.0",
   "description": "A fast, simple logger with children",
   "main": "index.js",
   "scripts": {
