@@ -48,7 +48,11 @@ const colors = new Map([
 , ['gray', 90]
 , ['brightRed', 91]
 , ['brightGreen', 92]
+, ['brightYellow', 93]
 , ['brightBlue', 94]
+, ['brightMagenta', 95]
+, ['brightCyan', 96]
+, ['brightWhite', 97]
 ])
 
 function levelIsValid(lvl) {
