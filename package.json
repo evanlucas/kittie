@@ -1,0 +1,30 @@
+{
+  "name": "driftwood",
+  "version": "1.0.0",
+  "description": "A fast, simple logger with children",
+  "main": "index.js",
+  "scripts": {
+    "check": "check-pkg",
+    "lint": "lintit",
+    "pretest": "check-pkg && lintit",
+    "test": "tap test.js --cov"
+  },
+  "dependencies": {
+    "map-util": "^2.1.1"
+  },
+  "devDependencies": {
+    "check-pkg": "^2.0.2",
+    "lintit": "^1.0.4",
+    "tap": "^5.8.0"
+  },
+  "license": "MIT",
+  "author": "Evan Lucas <evanlucas@me.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/evanlucas/driftwood"
+  },
+  "homepage": "https://github.com/evanlucas/driftwood",
+  "bugs": {
+    "url": "https://github.com/evanlucas/driftwood/issues"
+  }
+}
