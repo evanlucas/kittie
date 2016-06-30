@@ -1,6 +1,6 @@
 'use strict'
 
-const Log = require('./')
+const Log = require('../')
 const log = Log.child('test')
 log._useColor = true
 Log.info(Log.color, 'works, but has no heading')
@@ -8,7 +8,7 @@ Log.info(Log.color, 'works, but has no heading')
 log.level = 'silly'
 const m = 'This is a log message'
 log.silly('silly', m)
-log.verbose('verbose', m)
+log.verbose('verbose %s', m)
 log.info('info', m)
 log.http('http', m)
 log.warn('warn', m)
