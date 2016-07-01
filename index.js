@@ -138,12 +138,12 @@ Log.prototype._shouldLog = function _shouldLog(lvl) {
 }
 
 Log.prototype._log = function _log(str) {
-  this.stream.write(str)
-  this.stream.write('\n')
+  this.stream.write(str + '\n')
 }
 
 Log.prototype._writeComponent = function _writeComponent(str) {
-  this._writeHeading(this.heading)
+  if (this.heading)
+    this._writeHeading(this.heading)
   if (str) this.stream.write(str)
   if (this.component)
     this._writePrefix(this.component)
@@ -156,8 +156,13 @@ Log.prototype.inspect = function inspect(obj, depth) {
   , depth: typeof depth === 'number' ? depth : null
   })
   str.split(splitRE).forEach((line) => {
-    this._writeComponent(applyFG('INSP', brightBlue, this._useColor))
-    this._log(line)
+    var s = ''
+    if (this.heading) s += applyFG(this.heading, white, this._useColor)
+    s += applyFG('INSP', brightBlue, this._useColor)
+    if (this.component)
+      s += applyFG(this.component, this.color, this._useColor)
+    s += line
+    this._log(s)
   })
 }
 
@@ -184,8 +189,13 @@ Log.prototype.silly = function silly() {
       break
   }
   str.split(splitRE).forEach((line) => {
-    this._writeComponent(applyInverse('sill', this._useColor))
-    this._log(line)
+    var s = ''
+    if (this.heading) s += applyFG(this.heading, white, this._useColor)
+    s += applyInverse('sill', this._useColor)
+    if (this.component)
+      s += applyFG(this.component, this.color, this._useColor)
+    s += line
+    this._log(s)
   })
 }
 
@@ -212,8 +222,13 @@ Log.prototype.verbose = function verbose() {
       break
   }
   str.split(splitRE).forEach((line) => {
-    this._writeComponent(applyFG('verb', brightBlue, this._useColor))
-    this._log(line)
+    var s = ''
+    if (this.heading) s += applyFG(this.heading, white, this._useColor)
+    s += applyFG('verb', brightBlue, this._useColor)
+    if (this.component)
+      s += applyFG(this.component, this.color, this._useColor)
+    s += line
+    this._log(s)
   })
 }
 
@@ -240,8 +255,13 @@ Log.prototype.info = function info() {
       break
   }
   str.split(splitRE).forEach((line) => {
-    this._writeComponent(applyFG('info', brightGreen, this._useColor))
-    this._log(line)
+    var s = ''
+    if (this.heading) s += applyFG(this.heading, white, this._useColor)
+    s += applyFG('info', brightGreen, this._useColor)
+    if (this.component)
+      s += applyFG(this.component, this.color, this._useColor)
+    s += line
+    this._log(s)
   })
 }
 
@@ -268,8 +288,13 @@ Log.prototype.http = function http() {
       break
   }
   str.split(splitRE).forEach((line) => {
-    this._writeComponent(applyFG('http', green, this._useColor))
-    this._log(line)
+    var s = ''
+    if (this.heading) s += applyFG(this.heading, white, this._useColor)
+    s += applyFG('http', green, this._useColor)
+    if (this.component)
+      s += applyFG(this.component, this.color, this._useColor)
+    s += line
+    this._log(s)
   })
 }
 
@@ -296,8 +321,13 @@ Log.prototype.warn = function warn() {
       break
   }
   str.split(splitRE).forEach((line) => {
-    this._writeComponent(applyFGBG('WARN', black, yellow, this._useColor))
-    this._log(line)
+    var s = ''
+    if (this.heading) s += applyFG(this.heading, white, this._useColor)
+    s += applyFGBG('WARN', black, yellow, this._useColor)
+    if (this.component)
+      s += applyFG(this.component, this.color, this._useColor)
+    s += line
+    this._log(s)
   })
 }
 
@@ -324,8 +354,13 @@ Log.prototype.error = function error() {
       break
   }
   str.split(splitRE).forEach((line) => {
-    this._writeComponent(applyFG('ERR!', brightRed, this._useColor))
-    this._log(line)
+    var s = ''
+    if (this.heading) s += applyFG(this.heading, white, this._useColor)
+    s += applyFG('ERR!', brightRed, this._useColor)
+    if (this.component)
+      s += applyFG(this.component, this.color, this._useColor)
+    s += line
+    this._log(s)
   })
 }
 
