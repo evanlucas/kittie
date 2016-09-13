@@ -69,14 +69,19 @@ function assertLevel(lvl) {
 
 currentColor = 94
 
-function Log(options) {
+function Log(options, parent) {
   const opts = Object.assign({
     stream: process.stderr
   , level: 'info'
   , heading: ''
   , color: ''
   , maxComponentLength: 10
+  , inheritLogLevel: false
   }, options)
+
+  this._parent = parent
+  this._children = new Set()
+  this._inheritLogLevel = opts.inheritLogLevel
 
   this.color = mapUtil.nextVal(currentColor, colors, true)
   currentColor = this.color
@@ -96,7 +101,8 @@ function Log(options) {
     }
   , set(lvl) {
       assertLevel(lvl)
-      this._level = logLevels.get(lvl)
+      const level = logLevels.get(lvl)
+      this._setLogLevel(level)
     }
   })
 
@@ -117,16 +123,32 @@ function Log(options) {
   this._component = opts.component
 }
 
+Log.prototype._setLogLevel = function _setLogLevel(level) {
+  this._level = level
+
+  // update all children
+  if (this._inheritLogLevel && this._children.size) {
+    for (const child of this._children) {
+      // call directly, no need to do Map#get() for each child
+      child._setLogLevel(level)
+    }
+  }
+}
+
 Log.prototype.child = function child(comp) {
-  return new Log(Object.assign({
+  const log = new Log(Object.assign({
     heading: this.heading
   , level: this.level
   , stream: this.stream
   , maxComponentLength: this.maxComponentLength
   , useColor: this._useColor
+  , inheritLogLevel: this._inheritLogLevel
   }, {
     component: comp
-  }))
+  }), this)
+
+  this._children.add(log)
+  return log
 }
 
 Log.prototype._shouldLog = function _shouldLog(lvl) {
