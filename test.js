@@ -126,3 +126,37 @@ test('log', (t) => {
     })
   })
 })
+
+const exp3 = [
+  '[92minfo[0m [96m    parent |[0m log level info'
+, '[92minfo[0m [97m    child1 |[0m log level info'
+, '[92minfo[0m [34m    child2 |[0m log level info'
+, '[7msill[27m [96m    parent |[0m log level silly'
+, '[7msill[27m [97m    child1 |[0m log level silly'
+, '[7msill[27m [34m    child2 |[0m log level silly'
+, '[92minfo[0m [96m    parent |[0m log level again info'
+, '[92minfo[0m [97m    child1 |[0m log level again info'
+, '[92minfo[0m [34m    child2 |[0m log level again info'
+]
+
+test('log', (t) => {
+  t.plan(exp3.length + 1)
+  const fp = path.join(__dirname, 'examples/example-3.js')
+  const child = spawn(process.execPath, [fp], {
+    cwd: process.cwd()
+  })
+
+  let buf = ''
+
+  child.stderr.on('data', (chunk) => {
+    buf += chunk.toString()
+  })
+
+  child.on('close', (code) => {
+    t.equal(code, 0, 'code')
+    buf.trim().split('\n').forEach((item, idx) => {
+      t.equal(item, exp3[idx])
+    })
+    t.end()
+  })
+})
