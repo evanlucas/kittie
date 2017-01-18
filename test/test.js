@@ -22,7 +22,7 @@ const exp1 = [
 
 test('log', (t) => {
   t.plan(exp1.length + 1)
-  const fp = path.join(__dirname, 'examples/example-1.js')
+  const fp = path.join(__dirname, '../examples/example-1.js')
   const child = spawn(process.execPath, [fp], {
     cwd: process.cwd()
   })
@@ -54,16 +54,11 @@ const exp2 = [
 , '[7msill[27m [96m     silly |[0m      b: true,'
 , '[7msill[27m [96m     silly |[0m      c: null,'
 , '[7msill[27m [96m     silly |[0m      d: false,'
-, '[7msill[27m [96m     silly |[0m      e: { name: \'I am a nested object\', nested: [Object] } } }'
-, '[94mINSP[0m [96m     silly |[0m { name: [32m\'evan\'[39m,'
-, '[94mINSP[0m [96m     silly |[0m   foo: [32m\'bar\'[39m,'
-, '[94mINSP[0m [96m     silly |[0m   out: '
-, '[94mINSP[0m [96m     silly |[0m    { a: [32m\'b\'[39m,'
-, '[94mINSP[0m [96m     silly |[0m      b: [33mtrue[39m,'
-, '[94mINSP[0m [96m     silly |[0m      c: [1mnull[22m,'
-, '[94mINSP[0m [96m     silly |[0m      d: [33mfalse[39m,'
-, '[94mINSP[0m [96m     silly |[0m      e: { name: [32m\'I am a nested object\'[39m, nested: { a: [32m\'even further\'[39m } } } }'
-, '[94mINSP[0m [96m     silly |[0m { name: [32m\'evan\'[39m, foo: [32m\'bar\'[39m, out: [36m[Object][39m }'
+, '[7msill[27m [96m     silly |[0m      e: '
+, '[7msill[27m [96m     silly |[0m       { name: \'I am a nested object\','
+, '[7msill[27m [96m     silly |[0m         nested: '
+, '[7msill[27m [96m     silly |[0m          { a: \'even further\','
+, '[7msill[27m [96m     silly |[0m            b: { name: \'biscuits\', friend: { depth: 1 } } } } } }'
 , '[94mverb[0m [96m     silly |[0m hello'
 , '[92minfo[0m [96m     silly |[0m hello'
 , '[32mhttp[0m [96m     silly |[0m hello'
@@ -108,7 +103,7 @@ const exp2 = [
 /* eslint-enable */
 test('log', (t) => {
   t.plan(exp2.length + 1)
-  const fp = path.join(__dirname, 'examples/example-2.js')
+  const fp = path.join(__dirname, '../examples/example-2.js')
   const child = spawn(process.execPath, [fp], {
     cwd: process.cwd()
   })
@@ -141,7 +136,7 @@ const exp3 = [
 
 test('log', (t) => {
   t.plan(exp3.length + 1)
-  const fp = path.join(__dirname, 'examples/example-3.js')
+  const fp = path.join(__dirname, '../examples/example-3.js')
   const child = spawn(process.execPath, [fp], {
     cwd: process.cwd()
   })

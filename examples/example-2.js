@@ -15,6 +15,12 @@ const obj = {
       name: 'I am a nested object'
     , nested: {
         a: 'even further'
+      , b: {
+          name: 'biscuits'
+        , friend: {
+            depth: 1
+          }
+        }
       }
     }
   }
@@ -27,8 +33,6 @@ log.silly('hello', { name: 'evan' })
 log.silly('hello', { name: 'evan' }, true)
 log.silly('hello', { name: 'evan' }, true, 5)
 log.silly(obj)
-log.inspect(obj)
-log.inspect(obj, 0)
 log.verbose('hello')
 log.info('hello')
 log.http('hello')

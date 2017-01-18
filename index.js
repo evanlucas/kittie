@@ -2,6 +2,7 @@
 
 const util = require('util')
 const mapUtil = require('map-util')
+const format = require('./format')
 
 const has = (obj, prop) => {
   return Object.prototype.hasOwnProperty.call(obj, prop)
@@ -194,20 +195,20 @@ Log.prototype.silly = function silly() {
   let str
   switch (arguments.length) {
     case 1:
-      str = util.format(arguments[0])
+      str = format(arguments[0])
       break
     case 2:
-      str = util.format(arguments[0], arguments[1])
+      str = format(arguments[0], arguments[1])
       break
     case 3:
-      str = util.format(arguments[0], arguments[1], arguments[2])
+      str = format(arguments[0], arguments[1], arguments[2])
       break
     default:
       const args = new Array(arguments.length)
       for (var i = 0; i < args.length; i++) {
         args[i] = arguments[i]
       }
-      str = util.format.apply(util, args)
+      str = format.apply(util, args)
       break
   }
   str.split(splitRE).forEach((line) => {
@@ -227,20 +228,20 @@ Log.prototype.verbose = function verbose() {
   let str
   switch (arguments.length) {
     case 1:
-      str = util.format(arguments[0])
+      str = format(arguments[0])
       break
     case 2:
-      str = util.format(arguments[0], arguments[1])
+      str = format(arguments[0], arguments[1])
       break
     case 3:
-      str = util.format(arguments[0], arguments[1], arguments[2])
+      str = format(arguments[0], arguments[1], arguments[2])
       break
     default:
       const args = new Array(arguments.length)
       for (var i = 0; i < args.length; i++) {
         args[i] = arguments[i]
       }
-      str = util.format.apply(util, args)
+      str = format.apply(util, args)
       break
   }
   str.split(splitRE).forEach((line) => {
@@ -260,20 +261,20 @@ Log.prototype.info = function info() {
   let str
   switch (arguments.length) {
     case 1:
-      str = util.format(arguments[0])
+      str = format(arguments[0])
       break
     case 2:
-      str = util.format(arguments[0], arguments[1])
+      str = format(arguments[0], arguments[1])
       break
     case 3:
-      str = util.format(arguments[0], arguments[1], arguments[2])
+      str = format(arguments[0], arguments[1], arguments[2])
       break
     default:
       const args = new Array(arguments.length)
       for (var i = 0; i < args.length; i++) {
         args[i] = arguments[i]
       }
-      str = util.format.apply(util, args)
+      str = format.apply(util, args)
       break
   }
   str.split(splitRE).forEach((line) => {
@@ -293,20 +294,20 @@ Log.prototype.http = function http() {
   let str
   switch (arguments.length) {
     case 1:
-      str = util.format(arguments[0])
+      str = format(arguments[0])
       break
     case 2:
-      str = util.format(arguments[0], arguments[1])
+      str = format(arguments[0], arguments[1])
       break
     case 3:
-      str = util.format(arguments[0], arguments[1], arguments[2])
+      str = format(arguments[0], arguments[1], arguments[2])
       break
     default:
       const args = new Array(arguments.length)
       for (var i = 0; i < args.length; i++) {
         args[i] = arguments[i]
       }
-      str = util.format.apply(util, args)
+      str = format.apply(util, args)
       break
   }
   str.split(splitRE).forEach((line) => {
@@ -326,20 +327,20 @@ Log.prototype.warn = function warn() {
   let str
   switch (arguments.length) {
     case 1:
-      str = util.format(arguments[0])
+      str = format(arguments[0])
       break
     case 2:
-      str = util.format(arguments[0], arguments[1])
+      str = format(arguments[0], arguments[1])
       break
     case 3:
-      str = util.format(arguments[0], arguments[1], arguments[2])
+      str = format(arguments[0], arguments[1], arguments[2])
       break
     default:
       const args = new Array(arguments.length)
       for (var i = 0; i < args.length; i++) {
         args[i] = arguments[i]
       }
-      str = util.format.apply(util, args)
+      str = format.apply(util, args)
       break
   }
   str.split(splitRE).forEach((line) => {
@@ -359,20 +360,20 @@ Log.prototype.error = function error() {
   let str
   switch (arguments.length) {
     case 1:
-      str = util.format(arguments[0])
+      str = format(arguments[0])
       break
     case 2:
-      str = util.format(arguments[0], arguments[1])
+      str = format(arguments[0], arguments[1])
       break
     case 3:
-      str = util.format(arguments[0], arguments[1], arguments[2])
+      str = format(arguments[0], arguments[1], arguments[2])
       break
     default:
       const args = new Array(arguments.length)
       for (var i = 0; i < args.length; i++) {
         args[i] = arguments[i]
       }
-      str = util.format.apply(util, args)
+      str = format.apply(util, args)
       break
   }
   str.split(splitRE).forEach((line) => {
