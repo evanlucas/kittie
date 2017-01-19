@@ -7,7 +7,7 @@
     "check": "check-pkg",
     "lint": "lintit",
     "pretest": "check-pkg && lintit",
-    "test": "tap test.js --cov"
+    "test": "tap test --cov"
   },
   "dependencies": {
     "map-util": "^2.1.1"
