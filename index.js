@@ -3,6 +3,34 @@
 const util = require('util')
 const mapUtil = require('map-util')
 const format = require('./format')
+const stringify = require('fast-safe-stringify')
+const timers = require('timers')
+
+const pid = process.pid
+
+// This block was taken from core. It is done so we don't generate
+// a new date more than once in the same second.
+// https://github.com/nodejs/node/blob/master/lib/_http_outgoing.js#L21-L33
+var dateCache
+function getDateString() {
+  if (!dateCache) {
+    var d = new Date()
+    dateCache = d.toISOString()
+    timers.enroll(getDateString, 1000 - d.getMilliseconds())
+    timers._unrefActive(getDateString)
+  }
+  return dateCache
+}
+
+getDateString._onTimeout = function _onTimeout() {
+  dateCache = undefined
+}
+
+// I'm normally against using env vars in packages
+// but the perf hit of doing a lookup on every log call is just too much.
+// We can assign the prototype functions conditionally based on this
+// variable while maintaining performance.
+const isJson = process.env.KITTIE_LOG_JSON === 'true'
 
 const has = (obj, prop) => {
   return Object.prototype.hasOwnProperty.call(obj, prop)
@@ -164,236 +192,400 @@ Log.prototype._log = function _log(str) {
   this.stream.write(str + '\n')
 }
 
-Log.prototype._writeComponent = function _writeComponent(str) {
-  if (this.heading)
-    this._writeHeading(this.heading)
-  if (str) this.stream.write(str)
-  if (this.component)
-    this._writePrefix(this.component)
-}
-
-Log.prototype.inspect = function inspect(obj, depth) {
-  if (!this._shouldLog('verbose')) return
-  const str = util.inspect(obj, {
-    colors: this._useColor
-  , depth: typeof depth === 'number' ? depth : null
-  })
-  str.split(splitRE).forEach((line) => {
-    var s = ''
-    if (this.heading) s += applyFG(this.heading, white, this._useColor)
-    s += applyFG('INSP', brightBlue, this._useColor)
-    if (this.component)
-      s += applyFG(this.component, this.color, this._useColor)
-    s += line
-    this._log(s)
-  })
-}
-
-Log.prototype.silly = function silly() {
-  if (!this._shouldLog('silly')) return
-
-  let str
-  switch (arguments.length) {
-    case 1:
-      str = format(arguments[0])
-      break
-    case 2:
-      str = format(arguments[0], arguments[1])
-      break
-    case 3:
-      str = format(arguments[0], arguments[1], arguments[2])
-      break
-    default:
-      const args = new Array(arguments.length)
-      for (var i = 0; i < args.length; i++) {
-        args[i] = arguments[i]
-      }
-      str = format.apply(util, args)
-      break
+if (isJson) {
+  // Depth argument is ignored here.
+  Log.prototype.inspect = function inspect(obj) {
+    if (!this._shouldLog('verbose')) return
+    this._log(stringify({
+      level: 'verbose'
+    , msg: obj
+    , timestamp: getDateString()
+    , heading: this.heading
+    , component: this._component
+    , pid: pid
+    }))
   }
-  str.split(splitRE).forEach((line) => {
-    var s = ''
-    if (this.heading) s += applyFG(this.heading, white, this._useColor)
-    s += applyInverse('sill', this._useColor)
-    if (this.component)
-      s += applyFG(this.component, this.color, this._useColor)
-    s += line
-    this._log(s)
-  })
-}
 
-Log.prototype.verbose = function verbose() {
-  if (!this._shouldLog('verbose')) return
+  Log.prototype.silly = function silly() {
+    if (!this._shouldLog('silly')) return
+    const msg = {
+      level: 'silly'
+    , msg: null
+    , timestamp: getDateString()
+    , heading: this.heading
+    , component: this._component
+    , pid: pid
+    }
 
-  let str
-  switch (arguments.length) {
-    case 1:
-      str = format(arguments[0])
-      break
-    case 2:
-      str = format(arguments[0], arguments[1])
-      break
-    case 3:
-      str = format(arguments[0], arguments[1], arguments[2])
-      break
-    default:
-      const args = new Array(arguments.length)
-      for (var i = 0; i < args.length; i++) {
-        args[i] = arguments[i]
-      }
-      str = format.apply(util, args)
-      break
+    if (!arguments.length) {
+      return this._log(stringify(msg))
+    }
+
+    msg.msg = []
+    for (var i = 0; i < arguments.length; i++) {
+      msg.msg.push(arguments[i])
+    }
+
+    this._log(stringify(msg))
   }
-  str.split(splitRE).forEach((line) => {
-    var s = ''
-    if (this.heading) s += applyFG(this.heading, white, this._useColor)
-    s += applyFG('verb', brightBlue, this._useColor)
-    if (this.component)
-      s += applyFG(this.component, this.color, this._useColor)
-    s += line
-    this._log(s)
-  })
-}
 
-Log.prototype.info = function info() {
-  if (!this._shouldLog('info')) return
+  Log.prototype.verbose = function verbose() {
+    if (!this._shouldLog('verbose')) return
+    const msg = {
+      level: 'verbose'
+    , msg: null
+    , timestamp: getDateString()
+    , heading: this.heading
+    , component: this._component
+    , pid: pid
+    }
 
-  let str
-  switch (arguments.length) {
-    case 1:
-      str = format(arguments[0])
-      break
-    case 2:
-      str = format(arguments[0], arguments[1])
-      break
-    case 3:
-      str = format(arguments[0], arguments[1], arguments[2])
-      break
-    default:
-      const args = new Array(arguments.length)
-      for (var i = 0; i < args.length; i++) {
-        args[i] = arguments[i]
-      }
-      str = format.apply(util, args)
-      break
+    if (!arguments.length) {
+      return this._log(stringify(msg))
+    }
+
+    msg.msg = []
+    for (var i = 0; i < arguments.length; i++) {
+      msg.msg.push(arguments[i])
+    }
+
+    this._log(stringify(msg))
   }
-  str.split(splitRE).forEach((line) => {
-    var s = ''
-    if (this.heading) s += applyFG(this.heading, white, this._useColor)
-    s += applyFG('info', brightGreen, this._useColor)
-    if (this.component)
-      s += applyFG(this.component, this.color, this._useColor)
-    s += line
-    this._log(s)
-  })
-}
 
-Log.prototype.http = function http() {
-  if (!this._shouldLog('http')) return
+  Log.prototype.info = function info() {
+    if (!this._shouldLog('info')) return
+    const msg = {
+      level: 'info'
+    , msg: null
+    , timestamp: getDateString()
+    , heading: this.heading
+    , component: this._component
+    , pid: pid
+    }
 
-  let str
-  switch (arguments.length) {
-    case 1:
-      str = format(arguments[0])
-      break
-    case 2:
-      str = format(arguments[0], arguments[1])
-      break
-    case 3:
-      str = format(arguments[0], arguments[1], arguments[2])
-      break
-    default:
-      const args = new Array(arguments.length)
-      for (var i = 0; i < args.length; i++) {
-        args[i] = arguments[i]
-      }
-      str = format.apply(util, args)
-      break
+    if (!arguments.length) {
+      return this._log(stringify(msg))
+    }
+
+    msg.msg = []
+    for (var i = 0; i < arguments.length; i++) {
+      msg.msg.push(arguments[i])
+    }
+
+    this._log(stringify(msg))
   }
-  str.split(splitRE).forEach((line) => {
-    var s = ''
-    if (this.heading) s += applyFG(this.heading, white, this._useColor)
-    s += applyFG('http', green, this._useColor)
-    if (this.component)
-      s += applyFG(this.component, this.color, this._useColor)
-    s += line
-    this._log(s)
-  })
-}
 
-Log.prototype.warn = function warn() {
-  if (!this._shouldLog('warn')) return
+  Log.prototype.http = function http() {
+    if (!this._shouldLog('http')) return
+    const msg = {
+      level: 'http'
+    , msg: null
+    , timestamp: getDateString()
+    , heading: this.heading
+    , component: this._component
+    , pid: pid
+    }
 
-  let str
-  switch (arguments.length) {
-    case 1:
-      str = format(arguments[0])
-      break
-    case 2:
-      str = format(arguments[0], arguments[1])
-      break
-    case 3:
-      str = format(arguments[0], arguments[1], arguments[2])
-      break
-    default:
-      const args = new Array(arguments.length)
-      for (var i = 0; i < args.length; i++) {
-        args[i] = arguments[i]
-      }
-      str = format.apply(util, args)
-      break
+    if (!arguments.length) {
+      return this._log(stringify(msg))
+    }
+
+    msg.msg = []
+    for (var i = 0; i < arguments.length; i++) {
+      msg.msg.push(arguments[i])
+    }
+
+    this._log(stringify(msg))
   }
-  str.split(splitRE).forEach((line) => {
-    var s = ''
-    if (this.heading) s += applyFG(this.heading, white, this._useColor)
-    s += applyFGBG('WARN', black, yellow, this._useColor)
-    if (this.component)
-      s += applyFG(this.component, this.color, this._useColor)
-    s += line
-    this._log(s)
-  })
-}
 
-Log.prototype.error = function error() {
-  if (!this._shouldLog('error')) return
+  Log.prototype.warn = function warn() {
+    if (!this._shouldLog('warn')) return
+    const msg = {
+      level: 'warn'
+    , msg: null
+    , timestamp: getDateString()
+    , heading: this.heading
+    , component: this._component
+    , pid: pid
+    }
 
-  let str
-  switch (arguments.length) {
-    case 1:
-      str = format(arguments[0])
-      break
-    case 2:
-      str = format(arguments[0], arguments[1])
-      break
-    case 3:
-      str = format(arguments[0], arguments[1], arguments[2])
-      break
-    default:
-      const args = new Array(arguments.length)
-      for (var i = 0; i < args.length; i++) {
-        args[i] = arguments[i]
+    if (!arguments.length) {
+      return this._log(stringify(msg))
+    }
+
+    msg.msg = []
+    for (var i = 0; i < arguments.length; i++) {
+      const item = arguments[i]
+      if (item && typeof item === 'object' && item.name && item.stack) {
+        msg.msg.push(formatError(item))
+      } else {
+        msg.msg.push(arguments[i])
       }
-      str = format.apply(util, args)
-      break
+    }
+
+    this._log(stringify(msg))
   }
-  str.split(splitRE).forEach((line) => {
-    var s = ''
-    if (this.heading) s += applyFG(this.heading, white, this._useColor)
-    s += applyFG('ERR!', brightRed, this._useColor)
+
+  Log.prototype.error = function error() {
+    if (!this._shouldLog('error')) return
+    const msg = {
+      level: 'error'
+    , msg: null
+    , timestamp: getDateString()
+    , heading: this.heading
+    , component: this._component
+    , pid: pid
+    }
+
+    if (!arguments.length) {
+      return this._log(stringify(msg))
+    }
+
+    msg.msg = []
+    for (var i = 0; i < arguments.length; i++) {
+      const item = arguments[i]
+      if (item && typeof item === 'object' && item.name && item.stack) {
+        msg.msg.push(formatError(item))
+      } else {
+        msg.msg.push(arguments[i])
+      }
+    }
+
+    this._log(stringify(msg))
+  }
+
+} else {
+  Log.prototype._writeComponent = function _writeComponent(str) {
+    if (this.heading)
+      this._writeHeading(this.heading)
+    if (str) this.stream.write(str)
     if (this.component)
-      s += applyFG(this.component, this.color, this._useColor)
-    s += line
-    this._log(s)
-  })
-}
+      this._writePrefix(this.component)
+  }
 
-Log.prototype._writeHeading = function _writeHeading(heading) {
-  if (heading)
-    this.stream.write(applyFG(heading, white, this._useColor))
-}
+  Log.prototype.inspect = function inspect(obj, depth) {
+    if (!this._shouldLog('verbose')) return
+    const str = util.inspect(obj, {
+      colors: this._useColor
+    , depth: typeof depth === 'number' ? depth : null
+    })
+    str.split(splitRE).forEach((line) => {
+      var s = ''
+      if (this.heading) s += applyFG(this.heading, white, this._useColor)
+      s += applyFG('INSP', brightBlue, this._useColor)
+      if (this.component)
+        s += applyFG(this.component, this.color, this._useColor)
+      s += line
+      this._log(s)
+    })
+  }
 
-Log.prototype._writePrefix = function _writePrefix(prefix) {
-  this.stream.write(applyFG(prefix, this.color, this._useColor))
+  Log.prototype.silly = function silly() {
+    if (!this._shouldLog('silly')) return
+
+    let str
+    switch (arguments.length) {
+      case 1:
+        str = format(arguments[0])
+        break
+      case 2:
+        str = format(arguments[0], arguments[1])
+        break
+      case 3:
+        str = format(arguments[0], arguments[1], arguments[2])
+        break
+      default:
+        const args = new Array(arguments.length)
+        for (var i = 0; i < args.length; i++) {
+          args[i] = arguments[i]
+        }
+        str = format.apply(util, args)
+        break
+    }
+    str.split(splitRE).forEach((line) => {
+      var s = ''
+      if (this.heading) s += applyFG(this.heading, white, this._useColor)
+      s += applyInverse('sill', this._useColor)
+      if (this.component)
+        s += applyFG(this.component, this.color, this._useColor)
+      s += line
+      this._log(s)
+    })
+  }
+
+  Log.prototype.verbose = function verbose() {
+    if (!this._shouldLog('verbose')) return
+
+    let str
+    switch (arguments.length) {
+      case 1:
+        str = format(arguments[0])
+        break
+      case 2:
+        str = format(arguments[0], arguments[1])
+        break
+      case 3:
+        str = format(arguments[0], arguments[1], arguments[2])
+        break
+      default:
+        const args = new Array(arguments.length)
+        for (var i = 0; i < args.length; i++) {
+          args[i] = arguments[i]
+        }
+        str = format.apply(util, args)
+        break
+    }
+    str.split(splitRE).forEach((line) => {
+      var s = ''
+      if (this.heading) s += applyFG(this.heading, white, this._useColor)
+      s += applyFG('verb', brightBlue, this._useColor)
+      if (this.component)
+        s += applyFG(this.component, this.color, this._useColor)
+      s += line
+      this._log(s)
+    })
+  }
+
+  Log.prototype.info = function info() {
+    if (!this._shouldLog('info')) return
+
+    let str
+    switch (arguments.length) {
+      case 1:
+        str = format(arguments[0])
+        break
+      case 2:
+        str = format(arguments[0], arguments[1])
+        break
+      case 3:
+        str = format(arguments[0], arguments[1], arguments[2])
+        break
+      default:
+        const args = new Array(arguments.length)
+        for (var i = 0; i < args.length; i++) {
+          args[i] = arguments[i]
+        }
+        str = format.apply(util, args)
+        break
+    }
+    str.split(splitRE).forEach((line) => {
+      var s = ''
+      if (this.heading) s += applyFG(this.heading, white, this._useColor)
+      s += applyFG('info', brightGreen, this._useColor)
+      if (this.component)
+        s += applyFG(this.component, this.color, this._useColor)
+      s += line
+      this._log(s)
+    })
+  }
+
+  Log.prototype.http = function http() {
+    if (!this._shouldLog('http')) return
+
+    let str
+    switch (arguments.length) {
+      case 1:
+        str = format(arguments[0])
+        break
+      case 2:
+        str = format(arguments[0], arguments[1])
+        break
+      case 3:
+        str = format(arguments[0], arguments[1], arguments[2])
+        break
+      default:
+        const args = new Array(arguments.length)
+        for (var i = 0; i < args.length; i++) {
+          args[i] = arguments[i]
+        }
+        str = format.apply(util, args)
+        break
+    }
+    str.split(splitRE).forEach((line) => {
+      var s = ''
+      if (this.heading) s += applyFG(this.heading, white, this._useColor)
+      s += applyFG('http', green, this._useColor)
+      if (this.component)
+        s += applyFG(this.component, this.color, this._useColor)
+      s += line
+      this._log(s)
+    })
+  }
+
+  Log.prototype.warn = function warn() {
+    if (!this._shouldLog('warn')) return
+
+    let str
+    switch (arguments.length) {
+      case 1:
+        str = format(arguments[0])
+        break
+      case 2:
+        str = format(arguments[0], arguments[1])
+        break
+      case 3:
+        str = format(arguments[0], arguments[1], arguments[2])
+        break
+      default:
+        const args = new Array(arguments.length)
+        for (var i = 0; i < args.length; i++) {
+          args[i] = arguments[i]
+        }
+        str = format.apply(util, args)
+        break
+    }
+    str.split(splitRE).forEach((line) => {
+      var s = ''
+      if (this.heading) s += applyFG(this.heading, white, this._useColor)
+      s += applyFGBG('WARN', black, yellow, this._useColor)
+      if (this.component)
+        s += applyFG(this.component, this.color, this._useColor)
+      s += line
+      this._log(s)
+    })
+  }
+
+  Log.prototype.error = function error() {
+    if (!this._shouldLog('error')) return
+
+    let str
+    switch (arguments.length) {
+      case 1:
+        str = format(arguments[0])
+        break
+      case 2:
+        str = format(arguments[0], arguments[1])
+        break
+      case 3:
+        str = format(arguments[0], arguments[1], arguments[2])
+        break
+      default:
+        const args = new Array(arguments.length)
+        for (var i = 0; i < args.length; i++) {
+          args[i] = arguments[i]
+        }
+        str = format.apply(util, args)
+        break
+    }
+    str.split(splitRE).forEach((line) => {
+      var s = ''
+      if (this.heading) s += applyFG(this.heading, white, this._useColor)
+      s += applyFG('ERR!', brightRed, this._useColor)
+      if (this.component)
+        s += applyFG(this.component, this.color, this._useColor)
+      s += line
+      this._log(s)
+    })
+  }
+
+  Log.prototype._writeHeading = function _writeHeading(heading) {
+    if (heading)
+      this.stream.write(applyFG(heading, white, this._useColor))
+  }
+
+  Log.prototype._writePrefix = function _writePrefix(prefix) {
+    this.stream.write(applyFG(prefix, this.color, this._useColor))
+  }
 }
 
 function applyFG(str, fg, color) {
@@ -424,6 +616,22 @@ function leftPad(str, max) {
 
   if (str.length === max) return str + ' |'
   return str.slice(0, max) + ' |'
+}
+
+function formatError(err) {
+  const obj = {
+    type: err.constructor ? err.constructor.name : '<unknown>'
+  , message: err.message
+  , stack: err.stack
+  }
+
+  for (var key in err) {
+    if (obj[key] === undefined) {
+      obj[key] = err[key]
+    }
+  }
+
+  return obj
 }
 
 module.exports = new Log()
