@@ -197,7 +197,7 @@ if (isJson) {
   Log.prototype.inspect = function inspect(obj) {
     if (!this._shouldLog('verbose')) return
     this._log(stringify({
-      level: 'verbose'
+      severity: 'verbose'
     , msg: obj
     , timestamp: getDateString()
     , heading: this.heading
@@ -209,7 +209,7 @@ if (isJson) {
   Log.prototype.silly = function silly() {
     if (!this._shouldLog('silly')) return
     const msg = {
-      level: 'silly'
+      severity: 'silly'
     , msg: null
     , timestamp: getDateString()
     , heading: this.heading
@@ -232,7 +232,7 @@ if (isJson) {
   Log.prototype.verbose = function verbose() {
     if (!this._shouldLog('verbose')) return
     const msg = {
-      level: 'verbose'
+      severity: 'verbose'
     , msg: null
     , timestamp: getDateString()
     , heading: this.heading
@@ -255,7 +255,7 @@ if (isJson) {
   Log.prototype.info = function info() {
     if (!this._shouldLog('info')) return
     const msg = {
-      level: 'info'
+      severity: 'info'
     , msg: null
     , timestamp: getDateString()
     , heading: this.heading
@@ -278,7 +278,7 @@ if (isJson) {
   Log.prototype.http = function http() {
     if (!this._shouldLog('http')) return
     const msg = {
-      level: 'http'
+      severity: 'http'
     , msg: null
     , timestamp: getDateString()
     , heading: this.heading
@@ -301,7 +301,7 @@ if (isJson) {
   Log.prototype.warn = function warn() {
     if (!this._shouldLog('warn')) return
     const msg = {
-      level: 'warn'
+      severity: 'warn'
     , msg: null
     , timestamp: getDateString()
     , heading: this.heading
@@ -329,7 +329,7 @@ if (isJson) {
   Log.prototype.error = function error() {
     if (!this._shouldLog('error')) return
     const msg = {
-      level: 'error'
+      severity: 'error'
     , msg: null
     , timestamp: getDateString()
     , heading: this.heading
