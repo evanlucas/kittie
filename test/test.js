@@ -45,8 +45,8 @@ test('log', (t) => {
 const exp2 = [
   '[7msill[27m [96m     silly |[0m hello'
 , '[7msill[27m [96m     silly |[0m hello { name: \'evan\' }'
-, '[7msill[27m [96m     silly |[0m hello { name: \'evan\' } true'
-, '[7msill[27m [96m     silly |[0m hello { name: \'evan\' } true 5'
+, '[7msill[27m [96m     silly |[0m hello { name: \'evan\' }'
+, '[7msill[27m [96m     silly |[0m hello { name: \'evan\' }'
 , '[7msill[27m [96m     silly |[0m { name: \'evan\','
 , '[7msill[27m [96m     silly |[0m   foo: \'bar\','
 , '[7msill[27m [96m     silly |[0m   out: '

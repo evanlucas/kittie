@@ -39,29 +39,47 @@ debug.info('Hey! This is a debug message')
 
 Each logger has the following methods:
 
-#### silly(arg1[, arg2])
+#### silly(message[, meta])
+
+* `message` [`<String>`][]
+* `meta` [`<Object>`][]
 
 Will only be logged if the logger's `level` is set to `silly`.
 
-#### verbose(arg1[, arg2])
+#### verbose(message[, meta])
+
+* `message` [`<String>`][]
+* `meta` [`<Object>`][]
 
 Will only be logged if the logger's `level` is set to `silly` or `verbose`.
 
-#### info(arg1[, arg2])
+#### info(message[, meta])
+
+* `message` [`<String>`][]
+* `meta` [`<Object>`][]
 
 Will only be logged if the logger's `level` is set to `silly`, `verbose`, or
 `info`.
 
-#### http(arg1[, arg2])
+#### http(message[, meta])
+
+* `message` [`<String>`][]
+* `meta` [`<Object>`][]
 
 Will only be logged if the logger's `level` is set to `silly`, `verbose`,
 `info`, or `http`.
 
-#### warn(arg1[, arg2])
+#### warn(message[, meta])
+
+* `message` [`<String>`][]
+* `meta` [`<Object>`][]
 
 Will be logged unless the logger's `level` is set to `silent` or `error`.
 
-#### error(arg1[, arg2])
+#### error(message[, meta])
+
+* `message` [`<String>`][]
+* `meta` [`<Object>`][]
 
 Will be logged unless the logger's `level` is set to `silent`.
 
@@ -107,3 +125,6 @@ Evan Lucas
 ## License
 
 MIT (See `LICENSE` for more info)
+
+[`<Object>`]: https://mdn.io/object
+[`<String>`]: https://mdn.io/string
