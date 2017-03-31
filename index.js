@@ -198,7 +198,8 @@ if (isJson) {
     if (!this._shouldLog('verbose')) return
     this._log(stringify({
       severity: 'verbose'
-    , msg: obj
+    , message: null
+    , context: obj
     , timestamp: getDateString()
     , heading: this.heading
     , component: this._component
@@ -206,152 +207,102 @@ if (isJson) {
     }))
   }
 
-  Log.prototype.silly = function silly() {
+  Log.prototype.silly = function silly(msg, meta) {
     if (!this._shouldLog('silly')) return
-    const msg = {
+    const m = {
       severity: 'silly'
-    , msg: null
+    , message: msg
+    , context: meta
     , timestamp: getDateString()
     , heading: this.heading
     , component: this._component
     , pid: pid
     }
 
-    if (!arguments.length) {
-      return this._log(stringify(msg))
-    }
-
-    msg.msg = []
-    for (var i = 0; i < arguments.length; i++) {
-      msg.msg.push(arguments[i])
-    }
-
-    this._log(stringify(msg))
+    this._log(stringify(m))
   }
 
-  Log.prototype.verbose = function verbose() {
+  Log.prototype.verbose = function verbose(msg, meta) {
     if (!this._shouldLog('verbose')) return
-    const msg = {
+    const m = {
       severity: 'verbose'
-    , msg: null
+    , message: msg
+    , context: meta
     , timestamp: getDateString()
     , heading: this.heading
     , component: this._component
     , pid: pid
     }
 
-    if (!arguments.length) {
-      return this._log(stringify(msg))
-    }
-
-    msg.msg = []
-    for (var i = 0; i < arguments.length; i++) {
-      msg.msg.push(arguments[i])
-    }
-
-    this._log(stringify(msg))
+    this._log(stringify(m))
   }
 
-  Log.prototype.info = function info() {
+  Log.prototype.info = function info(msg, meta) {
     if (!this._shouldLog('info')) return
-    const msg = {
+    const m = {
       severity: 'info'
-    , msg: null
+    , message: msg
+    , context: meta
     , timestamp: getDateString()
     , heading: this.heading
     , component: this._component
     , pid: pid
     }
 
-    if (!arguments.length) {
-      return this._log(stringify(msg))
-    }
-
-    msg.msg = []
-    for (var i = 0; i < arguments.length; i++) {
-      msg.msg.push(arguments[i])
-    }
-
-    this._log(stringify(msg))
+    this._log(stringify(m))
   }
 
-  Log.prototype.http = function http() {
+  Log.prototype.http = function http(msg, meta) {
     if (!this._shouldLog('http')) return
-    const msg = {
+    const m = {
       severity: 'http'
-    , msg: null
+    , message: msg
+    , context: meta
     , timestamp: getDateString()
     , heading: this.heading
     , component: this._component
     , pid: pid
     }
 
-    if (!arguments.length) {
-      return this._log(stringify(msg))
-    }
-
-    msg.msg = []
-    for (var i = 0; i < arguments.length; i++) {
-      msg.msg.push(arguments[i])
-    }
-
-    this._log(stringify(msg))
+    this._log(stringify(m))
   }
 
-  Log.prototype.warn = function warn() {
+  Log.prototype.warn = function warn(msg, meta) {
     if (!this._shouldLog('warn')) return
-    const msg = {
+    const m = {
       severity: 'warn'
-    , msg: null
+    , message: msg
+    , context: meta
     , timestamp: getDateString()
     , heading: this.heading
     , component: this._component
     , pid: pid
     }
 
-    if (!arguments.length) {
-      return this._log(stringify(msg))
+    if (meta && typeof meta === 'object' && meta.name && meta.stack) {
+      m.meta = formatError(meta)
     }
 
-    msg.msg = []
-    for (var i = 0; i < arguments.length; i++) {
-      const item = arguments[i]
-      if (item && typeof item === 'object' && item.name && item.stack) {
-        msg.msg.push(formatError(item))
-      } else {
-        msg.msg.push(arguments[i])
-      }
-    }
-
-    this._log(stringify(msg))
+    this._log(stringify(m))
   }
 
-  Log.prototype.error = function error() {
+  Log.prototype.error = function error(msg, meta) {
     if (!this._shouldLog('error')) return
-    const msg = {
+    const m = {
       severity: 'error'
-    , msg: null
+    , message: msg
+    , context: meta
     , timestamp: getDateString()
     , heading: this.heading
     , component: this._component
     , pid: pid
     }
 
-    if (!arguments.length) {
-      return this._log(stringify(msg))
+    if (meta && typeof meta === 'object' && meta.name && meta.stack) {
+      m.meta = formatError(meta)
     }
 
-    msg.msg = []
-    for (var i = 0; i < arguments.length; i++) {
-      const item = arguments[i]
-      if (item && typeof item === 'object' && item.name && item.stack) {
-        msg.msg.push(formatError(item))
-      } else {
-        msg.msg.push(arguments[i])
-      }
-    }
-
-    this._log(stringify(msg))
+    this._log(stringify(m))
   }
 
 } else {
@@ -380,28 +331,11 @@ if (isJson) {
     })
   }
 
-  Log.prototype.silly = function silly() {
+  Log.prototype.silly = function silly(msg, meta) {
     if (!this._shouldLog('silly')) return
-
-    let str
-    switch (arguments.length) {
-      case 1:
-        str = format(arguments[0])
-        break
-      case 2:
-        str = format(arguments[0], arguments[1])
-        break
-      case 3:
-        str = format(arguments[0], arguments[1], arguments[2])
-        break
-      default:
-        const args = new Array(arguments.length)
-        for (var i = 0; i < args.length; i++) {
-          args[i] = arguments[i]
-        }
-        str = format.apply(util, args)
-        break
-    }
+    const str = arguments.length === 1
+      ? format(msg)
+      : format(msg, meta)
     str.split(splitRE).forEach((line) => {
       var s = ''
       if (this.heading) s += applyFG(this.heading, white, this._useColor)
@@ -413,28 +347,12 @@ if (isJson) {
     })
   }
 
-  Log.prototype.verbose = function verbose() {
+  Log.prototype.verbose = function verbose(msg, meta) {
     if (!this._shouldLog('verbose')) return
+    const str = arguments.length === 1
+      ? format(msg)
+      : format(msg, meta)
 
-    let str
-    switch (arguments.length) {
-      case 1:
-        str = format(arguments[0])
-        break
-      case 2:
-        str = format(arguments[0], arguments[1])
-        break
-      case 3:
-        str = format(arguments[0], arguments[1], arguments[2])
-        break
-      default:
-        const args = new Array(arguments.length)
-        for (var i = 0; i < args.length; i++) {
-          args[i] = arguments[i]
-        }
-        str = format.apply(util, args)
-        break
-    }
     str.split(splitRE).forEach((line) => {
       var s = ''
       if (this.heading) s += applyFG(this.heading, white, this._useColor)
@@ -446,28 +364,12 @@ if (isJson) {
     })
   }
 
-  Log.prototype.info = function info() {
+  Log.prototype.info = function info(msg, meta) {
     if (!this._shouldLog('info')) return
+    const str = arguments.length === 1
+      ? format(msg)
+      : format(msg, meta)
 
-    let str
-    switch (arguments.length) {
-      case 1:
-        str = format(arguments[0])
-        break
-      case 2:
-        str = format(arguments[0], arguments[1])
-        break
-      case 3:
-        str = format(arguments[0], arguments[1], arguments[2])
-        break
-      default:
-        const args = new Array(arguments.length)
-        for (var i = 0; i < args.length; i++) {
-          args[i] = arguments[i]
-        }
-        str = format.apply(util, args)
-        break
-    }
     str.split(splitRE).forEach((line) => {
       var s = ''
       if (this.heading) s += applyFG(this.heading, white, this._useColor)
@@ -479,28 +381,13 @@ if (isJson) {
     })
   }
 
-  Log.prototype.http = function http() {
+  Log.prototype.http = function http(msg, meta) {
     if (!this._shouldLog('http')) return
 
-    let str
-    switch (arguments.length) {
-      case 1:
-        str = format(arguments[0])
-        break
-      case 2:
-        str = format(arguments[0], arguments[1])
-        break
-      case 3:
-        str = format(arguments[0], arguments[1], arguments[2])
-        break
-      default:
-        const args = new Array(arguments.length)
-        for (var i = 0; i < args.length; i++) {
-          args[i] = arguments[i]
-        }
-        str = format.apply(util, args)
-        break
-    }
+    const str = arguments.length === 1
+      ? format(msg)
+      : format(msg, meta)
+
     str.split(splitRE).forEach((line) => {
       var s = ''
       if (this.heading) s += applyFG(this.heading, white, this._useColor)
@@ -512,28 +399,12 @@ if (isJson) {
     })
   }
 
-  Log.prototype.warn = function warn() {
+  Log.prototype.warn = function warn(msg, meta) {
     if (!this._shouldLog('warn')) return
+    const str = arguments.length === 1
+      ? format(msg)
+      : format(msg, meta)
 
-    let str
-    switch (arguments.length) {
-      case 1:
-        str = format(arguments[0])
-        break
-      case 2:
-        str = format(arguments[0], arguments[1])
-        break
-      case 3:
-        str = format(arguments[0], arguments[1], arguments[2])
-        break
-      default:
-        const args = new Array(arguments.length)
-        for (var i = 0; i < args.length; i++) {
-          args[i] = arguments[i]
-        }
-        str = format.apply(util, args)
-        break
-    }
     str.split(splitRE).forEach((line) => {
       var s = ''
       if (this.heading) s += applyFG(this.heading, white, this._useColor)
@@ -545,28 +416,12 @@ if (isJson) {
     })
   }
 
-  Log.prototype.error = function error() {
+  Log.prototype.error = function error(msg, meta) {
     if (!this._shouldLog('error')) return
+    const str = arguments.length === 1
+      ? format(msg)
+      : format(msg, meta)
 
-    let str
-    switch (arguments.length) {
-      case 1:
-        str = format(arguments[0])
-        break
-      case 2:
-        str = format(arguments[0], arguments[1])
-        break
-      case 3:
-        str = format(arguments[0], arguments[1], arguments[2])
-        break
-      default:
-        const args = new Array(arguments.length)
-        for (var i = 0; i < args.length; i++) {
-          args[i] = arguments[i]
-        }
-        str = format.apply(util, args)
-        break
-    }
     str.split(splitRE).forEach((line) => {
       var s = ''
       if (this.heading) s += applyFG(this.heading, white, this._useColor)
