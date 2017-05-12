@@ -150,6 +150,22 @@ function Log(options, parent) {
   assertLevel(this.level)
   this.heading = opts.heading
   this._component = opts.component
+  if (opts.service) {
+    if (typeof opts.service !== 'object') {
+      throw new TypeError('service must be an object if present')
+    }
+
+    if (typeof opts.service.name !== 'string') {
+      throw new TypeError('service.name must be a string')
+    }
+
+    this.service = {
+      service: opts.service.name
+    , version: opts.service.version || 'unknown'
+    }
+  } else {
+    this.service = null
+  }
 }
 
 Log.prototype._setLogLevel = function _setLogLevel(level) {
@@ -174,6 +190,7 @@ Log.prototype.child = function child(comp) {
   , inheritLogLevel: this._inheritLogLevel
   }, {
     component: comp
+  , service: this.service
   }), this)
 
   this._children.add(log)
@@ -204,6 +221,7 @@ if (isJson) {
     , heading: this.heading
     , component: this._component
     , pid: pid
+    , serviceContext: this.service
     }))
   }
 
@@ -217,6 +235,7 @@ if (isJson) {
     , heading: this.heading
     , component: this._component
     , pid: pid
+    , serviceContext: this.service
     }
 
     this._log(stringify(m))
@@ -232,6 +251,7 @@ if (isJson) {
     , heading: this.heading
     , component: this._component
     , pid: pid
+    , serviceContext: this.service
     }
 
     this._log(stringify(m))
@@ -247,6 +267,7 @@ if (isJson) {
     , heading: this.heading
     , component: this._component
     , pid: pid
+    , serviceContext: this.service
     }
 
     this._log(stringify(m))
@@ -262,6 +283,7 @@ if (isJson) {
     , heading: this.heading
     , component: this._component
     , pid: pid
+    , serviceContext: this.service
     }
 
     this._log(stringify(m))
@@ -277,10 +299,22 @@ if (isJson) {
     , heading: this.heading
     , component: this._component
     , pid: pid
+    , serviceContext: this.service
     }
 
-    if (meta && typeof meta === 'object' && meta.name && meta.stack) {
+    if (isError(msg)) {
+      m.message = msg.stack
+    }
+
+    if (isError(meta)) {
       m.meta = formatError(meta)
+    } else if (meta !== null && typeof meta === 'object') {
+      const keys = Object.keys(meta)
+      for (var i = 0; i < keys.length; i++) {
+        if (isError(meta[keys[i]])) {
+          meta[keys[i]] = formatError(meta[keys[i]])
+        }
+      }
     }
 
     this._log(stringify(m))
@@ -296,10 +330,22 @@ if (isJson) {
     , heading: this.heading
     , component: this._component
     , pid: pid
+    , serviceContext: this.service
     }
 
-    if (meta && typeof meta === 'object' && meta.name && meta.stack) {
+    if (isError(msg)) {
+      m.message = msg.stack
+    }
+
+    if (isError(meta)) {
       m.meta = formatError(meta)
+    } else if (meta !== null && typeof meta === 'object') {
+      const keys = Object.keys(meta)
+      for (var i = 0; i < keys.length; i++) {
+        if (isError(meta[keys[i]])) {
+          meta[keys[i]] = formatError(meta[keys[i]])
+        }
+      }
     }
 
     this._log(stringify(m))
@@ -487,6 +533,10 @@ function formatError(err) {
   }
 
   return obj
+}
+
+function isError(err) {
+  return err !== null && typeof err === 'object' && err.name && err.stack
 }
 
 module.exports = new Log()
