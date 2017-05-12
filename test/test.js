@@ -155,3 +155,16 @@ test('log', (t) => {
     t.end()
   })
 })
+
+test('service works', (t) => {
+  const Log = require('../').Log
+  const log = new Log({
+    service: {
+      name: 'test'
+    }
+  })
+
+  const l2 = log.child('biscuits')
+  t.equal(l2.service.service, 'test')
+  t.end()
+})

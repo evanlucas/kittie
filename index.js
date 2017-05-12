@@ -181,6 +181,9 @@ Log.prototype._setLogLevel = function _setLogLevel(level) {
 }
 
 Log.prototype.child = function child(comp) {
+  const svc = this.service
+    ? { name: this.service.service, version: this.service.version }
+    : null
   const log = new Log(Object.assign({
     heading: this.heading
   , level: this.level
@@ -190,7 +193,7 @@ Log.prototype.child = function child(comp) {
   , inheritLogLevel: this._inheritLogLevel
   }, {
     component: comp
-  , service: this.service
+  , service: svc
   }), this)
 
   this._children.add(log)
