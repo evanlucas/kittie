@@ -181,6 +181,11 @@ Log.prototype.child = function child(comp) {
   return log
 }
 
+Log.prototype.cleanup = function cleanup() {
+  if (!this._parent) return
+  this._parent._children.delete(this)
+}
+
 Log.prototype._shouldLog = function _shouldLog(lvl) {
   if (this._level === Infinity) return false
   const l = logLevels.get(lvl)

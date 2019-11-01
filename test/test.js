@@ -170,6 +170,9 @@ test('service works', (t) => {
   })
 
   const l2 = log.child('biscuits')
+  t.equal(log._children.size, 1)
   t.equal(l2.service.service, 'test')
+  l2.cleanup()
+  t.equal(log._children.size, 0)
   t.end()
 })
