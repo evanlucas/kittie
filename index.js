@@ -4,27 +4,8 @@ const util = require('util')
 const mapUtil = require('map-util')
 const format = require('./format')
 const stringify = require('fast-safe-stringify')
-const timers = require('timers')
 
 const pid = process.pid
-
-// This block was taken from core. It is done so we don't generate
-// a new date more than once in the same second.
-// https://github.com/nodejs/node/blob/master/lib/_http_outgoing.js#L21-L33
-var dateCache
-function getDateString() {
-  if (!dateCache) {
-    var d = new Date()
-    dateCache = d.toISOString()
-    timers.enroll(getDateString, 1000 - d.getMilliseconds())
-    timers._unrefActive(getDateString)
-  }
-  return dateCache
-}
-
-getDateString._onTimeout = function _onTimeout() {
-  dateCache = undefined
-}
 
 // I'm normally against using env vars in packages
 // but the perf hit of doing a lookup on every log call is just too much.
@@ -182,7 +163,7 @@ Log.prototype._setLogLevel = function _setLogLevel(level) {
 
 Log.prototype.child = function child(comp) {
   const svc = this.service
-    ? { name: this.service.service, version: this.service.version }
+    ? {name: this.service.service, version: this.service.version}
     : null
   const log = new Log(Object.assign({
     heading: this.heading
@@ -220,7 +201,7 @@ if (isJson) {
       severity: 'verbose'
     , message: null
     , context: obj
-    , timestamp: getDateString()
+    , timestamp: new Date().toISOString()
     , heading: this.heading
     , component: this._component
     , pid: pid
@@ -234,7 +215,7 @@ if (isJson) {
       severity: 'silly'
     , message: msg
     , context: meta
-    , timestamp: getDateString()
+    , timestamp: new Date().toISOString()
     , heading: this.heading
     , component: this._component
     , pid: pid
@@ -250,7 +231,7 @@ if (isJson) {
       severity: 'verbose'
     , message: msg
     , context: meta
-    , timestamp: getDateString()
+    , timestamp: new Date().toISOString()
     , heading: this.heading
     , component: this._component
     , pid: pid
@@ -266,7 +247,7 @@ if (isJson) {
       severity: 'info'
     , message: msg
     , context: meta
-    , timestamp: getDateString()
+    , timestamp: new Date().toISOString()
     , heading: this.heading
     , component: this._component
     , pid: pid
@@ -282,7 +263,7 @@ if (isJson) {
       severity: 'http'
     , message: msg
     , context: meta
-    , timestamp: getDateString()
+    , timestamp: new Date().toISOString()
     , heading: this.heading
     , component: this._component
     , pid: pid
@@ -298,7 +279,7 @@ if (isJson) {
       severity: 'warn'
     , message: msg
     , context: meta
-    , timestamp: getDateString()
+    , timestamp: new Date().toISOString()
     , heading: this.heading
     , component: this._component
     , pid: pid
@@ -329,7 +310,7 @@ if (isJson) {
       severity: 'error'
     , message: msg
     , context: meta
-    , timestamp: getDateString()
+    , timestamp: new Date().toISOString()
     , heading: this.heading
     , component: this._component
     , pid: pid
