@@ -92,6 +92,7 @@ function Log(options, parent) {
   this._parent = parent
   this._children = new Set()
   this._inheritLogLevel = opts.inheritLogLevel
+  this.id = opts.id
 
   this.color = mapUtil.nextVal(currentColor, colors, true)
   currentColor = this.color
@@ -161,7 +162,7 @@ Log.prototype._setLogLevel = function _setLogLevel(level) {
   }
 }
 
-Log.prototype.child = function child(comp) {
+Log.prototype.child = function child(comp, id) {
   const svc = this.service
     ? {name: this.service.service, version: this.service.version}
     : null
@@ -175,6 +176,7 @@ Log.prototype.child = function child(comp) {
   }, {
     component: comp
   , service: svc
+  , id
   }), this)
 
   this._children.add(log)
@@ -211,6 +213,7 @@ if (isJson) {
     , component: this._component
     , pid: pid
     , serviceContext: this.service
+    , id: this.id
     }))
   }
 
@@ -225,6 +228,7 @@ if (isJson) {
     , component: this._component
     , pid: pid
     , serviceContext: this.service
+    , id: this.id
     }
 
     this._log(stringify(m))
@@ -241,6 +245,7 @@ if (isJson) {
     , component: this._component
     , pid: pid
     , serviceContext: this.service
+    , id: this.id
     }
 
     this._log(stringify(m))
@@ -257,6 +262,7 @@ if (isJson) {
     , component: this._component
     , pid: pid
     , serviceContext: this.service
+    , id: this.id
     }
 
     this._log(stringify(m))
@@ -273,6 +279,7 @@ if (isJson) {
     , component: this._component
     , pid: pid
     , serviceContext: this.service
+    , id: this.id
     }
 
     this._log(stringify(m))
@@ -289,6 +296,7 @@ if (isJson) {
     , component: this._component
     , pid: pid
     , serviceContext: this.service
+    , id: this.id
     }
 
     if (isError(msg)) {
@@ -320,6 +328,7 @@ if (isJson) {
     , component: this._component
     , pid: pid
     , serviceContext: this.service
+    , id: this.id
     }
 
     if (isError(msg)) {
