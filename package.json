@@ -14,9 +14,9 @@
     "map-util": "^2.1.1"
   },
   "devDependencies": {
-    "check-pkg": "^2.0.2",
-    "lintit": "^1.0.4",
-    "tap": "^5.8.0"
+    "check-pkg": "^2.1.1",
+    "lintit": "^7.2.1",
+    "tap": "^14.9.1"
   },
   "license": "MIT",
   "author": "Evan Lucas <evanlucas@me.com>",
