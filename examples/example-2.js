@@ -29,9 +29,9 @@ const obj = {
 const log = Log.child('silly')
 log.level = 'silly'
 log.silly('hello')
-log.silly('hello', { name: 'evan' })
-log.silly('hello', { name: 'evan' }, true)
-log.silly('hello', { name: 'evan' }, true, 5)
+log.silly('hello', {name: 'evan'})
+log.silly('hello', {name: 'evan'}, true)
+log.silly('hello', {name: 'evan'}, true, 5)
 log.silly(obj)
 log.verbose('hello')
 log.info('hello')
